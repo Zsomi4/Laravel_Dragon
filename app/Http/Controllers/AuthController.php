@@ -7,8 +7,21 @@ use App\Http\Controllers\BaseController;
 use App\Models\User;
 use Validator;
 
-class AuthController extends BaseController
-{
+class AuthController extends BaseController {
+
+    public function signIn(Request $request) {
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
+            $authUser = Auth::user();
+            $success["token"] = $authUser->createToken["MyToken"]->plainTextToken;
+            $success["name"] = $authUser->name;
+
+            return $this->sendResponse($success, "Sikeres bejelentkezés!");
+    } else {
+        // return $this->sendError(["Unauthorized!"], ["error" => "Hibás adatok!"]);
+        print_r("Unauthorized!");
+    }
+}
     public function signUp(Request $request) {
         $validator = Validator::make($request->all(),
         [
